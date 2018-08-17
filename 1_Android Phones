@@ -1,0 +1,44 @@
+#!/bin/bash
+emupath=~/Android/Sdk/tools/emulator
+studiopath=~/Files/android-studio/bin/studio.sh
+
+### New entries must be added above and in the inputvalid function ###
+
+function controller {
+            listdevices
+            read input
+            inputvalid
+
+            if   [[ $output != '' ]];
+              then run &&
+                   if [[ "${output:0:1}" != *[0-9]* ]]; then other
+                   else emulator
+                   fi
+            else  echo 'Wrong input!!!' &&echo '' &&controller
+            fi
+}
+function listdevices {
+            $emupath -list-avds &&echo 's_Android-studio'&&echo ''
+            echo 'Pick a device [1,2,,]'
+}
+function inputvalid {
+            case $input in
+              1 ) output='1_Nexus5X' ;;
+              2 ) output='2_TEST'    ;;
+              s ) output=$studiopath ;;
+              * ) output=''
+            esac
+}
+function run {
+            emulator() {
+              echo 'Running emulator...' &&echo ''
+              echo 'OBS! Closing the terminal will terminate the emulator!' &&echo ''
+              $emupath -avd $output
+}
+            other() {
+              $output
+}
+}
+echo ''
+controller
+echo Have a nice day!
